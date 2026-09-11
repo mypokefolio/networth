@@ -170,7 +170,10 @@ your vault file is never uploaded, and decryption happens in your browser.
 ## Using it
 
 - **Gate**: open a `.nwvault` (or `.json`) file, create a new vault, or load the
-  fictional "Demo Family" vault. The demo has no passphrase until you set one
+  fictional "Demo Family" vault. On iPhone and iPad the file input sends no
+  `accept` filter, because iOS types files by Uniform Type Identifier and would
+  grey out a custom extension it does not recognise; the file contents are
+  validated instead. The demo has no passphrase until you set one
   to download or lock.
 - **Dashboard**: hero net worth with delta vs the previous snapshot,
   composition of the selected snapshot, net worth trend, assets vs liabilities

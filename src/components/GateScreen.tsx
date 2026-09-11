@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import type { DragEvent, ReactNode } from "react";
+import { canDropFiles, readPickerEnv, vaultAccept } from "../state/filePicker";
 import type { LockedInfo } from "../state/useVaultSession";
 import { IconFile, IconLock, IconPlus, IconSparkle, Mark } from "./icons";
 
@@ -17,6 +18,10 @@ interface GateScreenProps {
 export function GateScreen({ onPickFile, onCreate, onDemo, locked, onUnlock, onForget, notice, themeControl }: GateScreenProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [drop, setDrop] = useState(false);
+  // Read once per mount: the accept filter is unsafe to send on touch platforms.
+  const [pickerEnv] = useState(readPickerEnv);
+  const accept = vaultAccept(pickerEnv);
+  const droppable = canDropFiles(pickerEnv);
 
   function onDrop(e: DragEvent<HTMLElement>) {
     e.preventDefault();
@@ -92,7 +97,9 @@ export function GateScreen({ onPickFile, onCreate, onDemo, locked, onUnlock, onF
               </span>
               <span className="mt-auto pt-8 text-lg font-medium tracking-tight">Open vault file</span>
               <span className="mt-1 text-sm muted">Decrypts in this tab with your passphrase.</span>
-              <span className="mt-4 text-xs muted">.nwvault or .json · drag a file here</span>
+              <span className="mt-4 text-xs muted">
+                {droppable ? ".nwvault or .json · drag a file here" : ".nwvault or .json · from Files, iCloud Drive, or Downloads"}
+              </span>
             </button>
             <button type="button" className="card" onClick={onCreate}>
               <span className="text-muted">
@@ -116,7 +123,9 @@ export function GateScreen({ onPickFile, onCreate, onDemo, locked, onUnlock, onF
         <input
           ref={inputRef}
           type="file"
-          accept=".nwvault,.json,application/json"
+          // Omitted on iOS and other touch platforms, where a custom extension
+          // has no Uniform Type Identifier and the file would be unselectable.
+          accept={accept}
           className="sr-only"
           aria-label="Open vault file"
           onChange={(e) => {
