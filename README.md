@@ -1,5 +1,7 @@
 # Net Worth Vault
 
+**Live: https://mypokefolio.github.io/networth/**
+
 A private, zero-backend net worth viewer. Your numbers live in an encrypted
 `.nwvault` file. The app decrypts it in memory, shows the Net Worth dashboard,
 lets you add or edit dated snapshots, and downloads a fresh encrypted file.
@@ -126,13 +128,20 @@ The app is a static bundle with no server, so any static host works. The build
 uses a relative `base`, so it runs unchanged from a domain root or from a
 subpath like `https://<user>.github.io/<repo>/`.
 
-`.github/workflows/deploy.yml` builds and publishes to GitHub Pages on every
-push to `main`. It lints, runs the unit tests, and type-checks before it
-deploys, so a broken build never reaches the live site. To enable it once:
+This repository is already deployed:
+
+**https://mypokefolio.github.io/networth/**
+
+`.github/workflows/deploy.yml` rebuilds and republishes on every push to
+`main`. It lints, runs the unit tests, and type-checks before it deploys, so a
+broken build never reaches the live site. Nothing else is needed; push and the
+site updates.
+
+To set the same thing up on another repository:
 
 ```bash
-gh repo create networth-vault --source=. --push --private   # or --public
-gh api -X POST repos/{owner}/networth-vault/pages -f build_type=workflow
+gh repo create <name> --source=. --push --public
+gh api -X POST repos/{owner}/<name>/pages -f build_type=workflow
 ```
 
 Or in the browser: Settings → Pages → Source → GitHub Actions.
